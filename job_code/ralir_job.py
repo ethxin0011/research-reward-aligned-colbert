@@ -1397,8 +1397,18 @@ def load_adapter(path):
         checkpoint["rank"],
     )
     adapter.load_state_dict(checkpoint["state_dict"])
+
+    device = torch.device(
+        "cuda" if torch.cuda.is_available() else "cpu"
+    )
+    adapter.to(device=device, dtype=torch.float32)
     adapter.eval()
 
+    print(
+        f"Loaded adapter on {next(adapter.parameters()).device}: "
+        f"{checkpoint_path}",
+        flush=True,
+    )
     return adapter
 
 
